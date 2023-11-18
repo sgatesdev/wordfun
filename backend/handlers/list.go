@@ -63,8 +63,8 @@ func (h *ListHandler) GetList(w http.ResponseWriter, r *http.Request) {
 		log.Println(i, v.Name())
 		w := strings.Split(v.Name(), ".")
 		words = append(words, models.Word{
-			Word: w[0],
-			File: "/audio/" + v.Name(),
+			Word:      w[0],
+			AudioFile: "/files/audio/" + v.Name(),
 		})
 	}
 

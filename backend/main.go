@@ -20,8 +20,8 @@ func main() {
 	listHandler := handlers.NewListHandler(router)
 	listHandler.RegisterRoutes()
 
-	audioHandler := handlers.NewAudioHandler(router)
-	audioHandler.RegisterRoutes()
+	fileHandler := handlers.NewFileHandler(router)
+	fileHandler.RegisterRoutes()
 
 	handler := cors.Default().Handler(router)
 
