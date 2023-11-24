@@ -4,39 +4,41 @@ import Container from 'react-bootstrap/Container';
 import Word from './components/Word';
 import { useState } from 'react';
 import { useEffect } from 'react'
+import { useContext } from 'react';
+import { WordMapContext, WordMapItem } from './components/WordMapProvider';
+import { getRandomIcon } from './components/StatusIcons';
 
 function App() {
-  const [words, setWords] = useState<WordResJson[]>([])
-  const [word, setWord] = useState<WordResJson>({})
+  const { words, updateWord, correct, setCorrect } = useContext(WordMapContext)
 
   useEffect(() => {
     getLesson()
   }, [])
 
-  type WordResJson = {
-    word?: string
-    audio_file?: string
-  }
-
-	const getLesson = async () => {
+ const getLesson = async () => {
 		try {
 			let res = await fetch(`http://localhost:8080/list`);
 			let data = await res.json();
-      console.log("NEW LESSON", data)
-      setWords(data)
+
+      data.forEach((word: WordMapItem, index: number) => {
+        let letterState = word!.word!.split('').map((letter: string) => {
+          return {letter: '', correct: false, answer: letter}
+        })
+        word.state = letterState
+        word.index = index
+        updateWord(index, word)
+      })
 		}
 		catch(err) {
 			console.warn(err)
 		}
 	}
 
-  const [wordPosition, setWordPosition] = useState<number>(0)
+  const refreshLesson = () => {
+    window.location.reload()
+  }
 
-  useEffect(() => {
-    if (words[wordPosition]) {
-      setWord(words[wordPosition])
-    }
-  }, [wordPosition,words])
+  const [wordPosition, setWordPosition] = useState<number>(0)
 
   const prevWord = () => {
     let prevPosition = wordPosition - 1
@@ -66,9 +68,12 @@ function App() {
           <Button variant="primary" onClick={nextWord}>Next Word</Button>
         </Col>
         <Col className="text-center"><h3>{wordPosition + 1} OF {words && words?.length}</h3></Col>
-        <Col className="text-end"><Button variant="warning" onClick={getLesson}>New Lesson</Button></Col>
+        <Col className="text-end"><Button variant="warning" onClick={refreshLesson}>New Lesson</Button></Col>
       </Row>
-      {word && <Word word={word.word} audio={word.audio_file} key={`${wordPosition}-${word.word}`}/>}
+      {wordPosition !== undefined ? <Word wordIndex={wordPosition} key={`${wordPosition}`}/> : ''}
+      <Row className="text-center p-3">
+      {getRandomIcon(correct) }
+      </Row>
     </Container>
   );
 }

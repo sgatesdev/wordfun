@@ -1,38 +1,52 @@
 import React, { createContext, useState } from 'react';
 
-// Define the shape of the context
-
-export type WordMap = {
+export type WordLetterMap = {
 	letter: string,
+  answer: string,
 	correct: boolean,
 }
 
-interface IMapContext {
-  map: Array<WordMap>;
-  updateMap: (pos: number, value: WordMap) => void;
+export type WordMapItem = {
+    index?: number
+    word?: string
+    audio_file?: string
+    state?: Array<WordLetterMap>
 }
 
-interface MapProviderProps {
-	children: React.ReactNode;
+interface ContextType {
+  words: Array<WordMapItem>;
+  correct: boolean,
+  setCorrect: Function,
+  updateWord: Function
 }
 
-// Create a context
-export const MapContext = createContext<IMapContext | undefined>(undefined);
+interface WordMapProviderProps {
+  children: React.ReactNode;
+}
 
-export const WordMapProvider: React.FC<MapProviderProps> = ({ children }) => {
-  const [map, setMap] = useState(new Array<WordMap>());
+export const WordMapContext = createContext<ContextType>({
+  words: [],
+  correct: false,
+  // stores whether entire word is correct, sits at index level - not cached
+  setCorrect: () => {},
+  updateWord: () => {}
+})
 
-  const updateMap = (pos: number, value: WordMap) => {
-	setMap(prevMap => {
-		let newMap = [...prevMap]
-		newMap[pos] = value
-		return newMap
-	})
-  };
+export const WordMapProvider: React.FC<WordMapProviderProps> = ({children}) => {
+  const [words, setWords] = useState<Array<WordMapItem>>([])
+  const [correct, setCorrect] = useState(false)
+
+  const updateWord = (position: number, word: WordMapItem) => {
+    setWords(prevWords => {
+      let newWords = [...prevWords]
+      newWords[position] = word
+      return newWords
+    })
+  }
 
   return (
-    <MapContext.Provider value={{ map, updateMap }}>
+    <WordMapContext.Provider value={{words, correct, setCorrect, updateWord}}>
       {children}
-    </MapContext.Provider>
-  );
-};
+    </WordMapContext.Provider>
+  )
+}
