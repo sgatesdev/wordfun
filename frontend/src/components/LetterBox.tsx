@@ -9,7 +9,7 @@ interface LetterBoxProps {
 
 const LetterBox: React.FC<LetterBoxProps>  = ({position,answer,updateMap}) => {
 	const [letter, setLetter] = useState('')
-	const [status, setStatus] = useState('20px solid gray')
+	const [status, setStatus] = useState('5px solid gray')
 	const [correct, setCorrect] = useState(false)
 
 	const handleFocus = (e:React.FocusEvent<HTMLTextAreaElement>) => {
@@ -52,7 +52,7 @@ const LetterBox: React.FC<LetterBoxProps>  = ({position,answer,updateMap}) => {
 	<textarea 
 		onFocus={(e) => handleFocus(e)}
 		onInput={(e) => handleInput(e)}
-		style={{fontSize:'25px', width:'50px', height:'50px', border: status, resize: 'none', overflow:'hidden', textAlign:'center', caretColor: 'transparent'}}
+		style={{fontSize:'40px', width:'75px', height:'75px', border: status, resize: 'none', overflow:'hidden', textAlign:'center', caretColor: 'transparent', marginRight:'5px'}}
 		disabled={correct}
 		value={letter}
    	/>

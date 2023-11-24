@@ -34,13 +34,9 @@ const Word: React.FC<WordProps> = ({word,audio}) => {
 	};
 
 	return (
+	<>
 	<Row style={{borderTop: '5px solid gray', marginBottom: '5px', padding: '5px'}}>
-		<Col xs={4}>
-			<audio controls src={`http://localhost:8080${audio}`}>
-			<a href={`http://localhost:8080${audio}`}> Download audio </a>
-			</audio>
-		</Col>
-		<Col>
+		<Col className="text-center">
 		{
 			letters?.map((letter, index) => {
 				return <LetterBox key={index} position={index} answer={letter} updateMap={updateMap}/>
@@ -48,6 +44,14 @@ const Word: React.FC<WordProps> = ({word,audio}) => {
 		}
 		</Col>
 	</Row>
+	<Row>
+		<Col className="text-center">
+			<audio controls src={`http://localhost:8080${audio}`}>
+			<a href={`http://localhost:8080${audio}`}> Download audio </a>
+			</audio>
+		</Col>
+	</Row>
+	</>
 	)
 }
 
