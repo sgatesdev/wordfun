@@ -18,6 +18,7 @@ interface ContextType {
   correct: boolean,
   setCorrect: Function,
   updateWord: Function
+  updateState: Function
 }
 
 interface WordMapProviderProps {
@@ -29,7 +30,8 @@ export const WordMapContext = createContext<ContextType>({
   correct: false,
   // stores whether entire word is correct, sits at index level - not cached
   setCorrect: () => {},
-  updateWord: () => {}
+  updateWord: () => {},
+  updateState: () => {}
 })
 
 export const WordMapProvider: React.FC<WordMapProviderProps> = ({children}) => {
@@ -44,8 +46,19 @@ export const WordMapProvider: React.FC<WordMapProviderProps> = ({children}) => {
     })
   }
 
+  const updateState = (wordIndex: number, statePosition: number, letterMapItem: WordLetterMap) => {
+    setWords(prevWords => {
+      let newWords = [...prevWords]
+      let word = newWords[wordIndex]
+      if (word && word.state) {
+        word.state[statePosition] = letterMapItem
+      }
+      return newWords
+    })
+  }
+
   return (
-    <WordMapContext.Provider value={{words, correct, setCorrect, updateWord}}>
+    <WordMapContext.Provider value={{words, correct, setCorrect, updateWord, updateState}}>
       {children}
     </WordMapContext.Provider>
   )

@@ -4,11 +4,10 @@ interface LetterBoxProps {
 	wordIndex: number,
 	position: number,
 	letterMapItem: WordLetterMap,
-	checkCorrect: Function,
 	letterBoxRefs: React.RefObject<HTMLTextAreaElement>[]
 }
 
-const LetterBox: React.FC<LetterBoxProps>  = ({position,wordIndex,letterMapItem,checkCorrect,letterBoxRefs}) => {
+const LetterBox: React.FC<LetterBoxProps>  = ({position,wordIndex,letterMapItem,letterBoxRefs}) => {
 	const [letter, setLetter] = useState('')
 	const [status, setStatus] = useState('5px solid gray')
 	const [correct, setCorrect] = useState(false)
@@ -30,9 +29,9 @@ const LetterBox: React.FC<LetterBoxProps>  = ({position,wordIndex,letterMapItem,
 			textareaRef.current.value = letterMapItem.letter
 			textareaRef.current?.dispatchEvent(new Event('input', { bubbles: true }))
 		}
-	}, [letterMapItem])
+	}, [])
 
-	let { words, updateWord } = useContext(WordMapContext)
+	let { updateState } = useContext(WordMapContext)
 	let {answer} = letterMapItem
 	
 	const handleInput = (e:React.FormEvent<HTMLTextAreaElement>) => {
@@ -53,26 +52,16 @@ const LetterBox: React.FC<LetterBoxProps>  = ({position,wordIndex,letterMapItem,
 	  if (text === answer?.toUpperCase()) {
 	    	setStatus('5px solid green')
 	     let w = { letter: text, correct: true, answer: answer }
-		// updateMap(position, w)
-		let word = words[wordIndex]
-		if (word && word.state) {
-			word.state[position] = w
-			setCorrect(true)
-		}
+		updateState(wordIndex, position, w)
 
 		if (letterBoxRefs[position + 1]) {
 			letterBoxRefs[position + 1].current?.focus()
 		}
 	  } else if (answer) {
-	    setStatus('5px solid red')
-	    let w = { letter: text, correct: false, answer: answer }
-		let word = words[wordIndex]
-		if (word && word.state) {
-			word.state[position] = w
-			setCorrect(false)
-		}
+		setStatus('5px solid red')
+		let w = { letter: text, correct: false, answer: answer }
+		updateState(wordIndex, position, w)
 	  }
-	  checkCorrect()
 	}
 
 	return(

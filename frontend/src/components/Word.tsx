@@ -4,43 +4,10 @@ import { useState, useEffect, useContext, useRef } from 'react';
 import { WordLetterMap, WordMapContext, WordMapItem } from './WordMapProvider';
 
 interface WordComponentProps {
-	wordIndex: number
+	wordItem: WordMapItem
 }
 
-const Word: React.FC<WordComponentProps> = ({wordIndex}) => {
-	const { words, setCorrect } = useContext(WordMapContext)
-	const [wordItem, setWord] = useState<WordMapItem | undefined>(undefined)
-
-	useEffect(() => {
-		if (words[wordIndex]) {
-			setWord(words[wordIndex])
-		}
-	}, [wordIndex, words])
-
-	useEffect(() => {
-		setCorrect(false)
-	}, [wordItem])
-
-	const handleTyping = () => {
-		let numCorrect = wordItem?.state?.filter((letterMapItem) => letterMapItem.correct)
-		if (numCorrect?.length === wordItem?.state?.length) {
-			setCorrect(true)
-		} else {
-			setCorrect(false)
-		}
-	}
-
-	const getAnswerBank = () => {
-		let bank = wordItem?.state?.map((letterMapItem, index) => {
-			if (letterMapItem.correct) {
-				return <span style={{textDecoration: 'line-through'}}>{letterMapItem.answer}</span>
-			} else {
-				return <span>{letterMapItem.answer}</span>
-			}
-		}).sort(() => Math.random() - 0.5)
-		return bank
-	}
-
+const Word: React.FC<WordComponentProps> = ({wordItem}) => {
 	let textareaRefArray: React.RefObject<HTMLTextAreaElement>[] = [];
 
 	return (
@@ -58,7 +25,6 @@ const Word: React.FC<WordComponentProps> = ({wordIndex}) => {
 					position={index} 
 					letterMapItem={letterMapItem} 
 					wordIndex={wordItem.index} 
-					checkCorrect={handleTyping}
 					letterBoxRefs={textareaRefArray}
 				/>
 			})

@@ -58,6 +58,43 @@ function App() {
     setWordPosition(nextPosition)
   }
 
+  useEffect(() => {
+    setCorrect(false)
+  }, [wordPosition])
+
+  useEffect(() => {
+    checkCorrect()
+  }, [words])
+
+  const checkCorrect = () => {
+		console.log("HERE CHECKING HANDLETYPING")
+    let wordItem = words[wordPosition]
+		let numCorrect = wordItem?.state?.filter((letterMapItem) => letterMapItem.correct)
+		if (numCorrect?.length === wordItem?.state?.length) {
+			console.log("TRUE")
+			setCorrect(true)
+		} else {
+			console.log("FALSE")
+			setCorrect(false)
+		}
+	}
+
+  const getAnswerBank = () => {
+    let wordItem = words[wordPosition]
+    if (wordItem.state === undefined) {
+      return
+    }
+    let copy = [...wordItem.state]
+		let bank = copy.sort((a,b) => a.answer.localeCompare(b.answer)).map((letterMapItem, index) => {
+			if (letterMapItem.correct) {
+				return <span style={{textDecoration: 'line-through'}}>{letterMapItem.answer.toUpperCase()}</span>
+			} else {
+				return <span>{letterMapItem.answer.toUpperCase()}</span>
+			}
+		})
+		return bank
+	}
+
   const [ width, height ] = useWindowSize()
 
   return (
@@ -74,7 +111,12 @@ function App() {
         <Col className="text-center"><h3>{wordPosition + 1} OF {words && words?.length}</h3></Col>
         <Col className="text-end"><Button variant="warning" onClick={refreshLesson}>New Lesson</Button></Col>
       </Row>
-      {wordPosition !== undefined ? <Word wordIndex={wordPosition} key={`${wordPosition}`}/> : ''}
+      {wordPosition !== undefined ? <Word wordItem={words[wordPosition]} key={`${wordPosition}`}/> : ''}
+      <Row className="p-3">
+        <Col>
+        {getAnswerBank()}
+        </Col>
+      </Row>
       <Row className="text-center p-3">
       {getRandomIcon(correct)}
       {correct && <Confetti width={width} height={height} />}
