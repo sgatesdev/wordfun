@@ -7,6 +7,8 @@ import { useEffect } from 'react'
 import { useContext } from 'react';
 import { WordMapContext, WordMapItem } from './components/WordMapProvider';
 import { getRandomIcon } from './components/StatusIcons';
+import { useWindowSize } from '@react-hook/window-size'
+import Confetti from 'react-confetti'
 
 function App() {
   const { words, updateWord, correct, setCorrect } = useContext(WordMapContext)
@@ -56,6 +58,8 @@ function App() {
     setWordPosition(nextPosition)
   }
 
+  const [ width, height ] = useWindowSize()
+
   return (
     <Container style={{marginTop: '15px'}}>
       <Row>
@@ -72,7 +76,8 @@ function App() {
       </Row>
       {wordPosition !== undefined ? <Word wordIndex={wordPosition} key={`${wordPosition}`}/> : ''}
       <Row className="text-center p-3">
-      {getRandomIcon(correct) }
+      {getRandomIcon(correct)}
+      {correct && <Confetti width={width} height={height} />}
       </Row>
     </Container>
   );

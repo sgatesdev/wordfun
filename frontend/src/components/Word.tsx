@@ -1,7 +1,8 @@
 import { Row, Col, Button } from 'react-bootstrap';
 import LetterBox from './LetterBox';
-import { useState, useEffect, useContext } from 'react';
-import { WordMapContext, WordMapItem } from './WordMapProvider';
+import { useState, useEffect, useContext, useRef } from 'react';
+import { WordLetterMap, WordMapContext, WordMapItem } from './WordMapProvider';
+
 interface WordComponentProps {
 	wordIndex: number
 }
@@ -20,7 +21,7 @@ const Word: React.FC<WordComponentProps> = ({wordIndex}) => {
 		setCorrect(false)
 	}, [wordItem])
 
-	const checkCorrect = () => {
+	const handleTyping = () => {
 		let numCorrect = wordItem?.state?.filter((letterMapItem) => letterMapItem.correct)
 		if (numCorrect?.length === wordItem?.state?.length) {
 			setCorrect(true)
@@ -28,6 +29,19 @@ const Word: React.FC<WordComponentProps> = ({wordIndex}) => {
 			setCorrect(false)
 		}
 	}
+
+	const getAnswerBank = () => {
+		let bank = wordItem?.state?.map((letterMapItem, index) => {
+			if (letterMapItem.correct) {
+				return <span style={{textDecoration: 'line-through'}}>{letterMapItem.answer}</span>
+			} else {
+				return <span>{letterMapItem.answer}</span>
+			}
+		}).sort(() => Math.random() - 0.5)
+		return bank
+	}
+
+	let textareaRefArray: React.RefObject<HTMLTextAreaElement>[] = [];
 
 	return (
 	<>
@@ -39,9 +53,17 @@ const Word: React.FC<WordComponentProps> = ({wordIndex}) => {
 				if (wordItem.index === undefined) {
 					return
 				}
-				return <LetterBox key={index} position={index} letterMapItem={letterMapItem} wordIndex={wordItem.index} checkCorrect={checkCorrect}/>
+				return <LetterBox
+					key={index} 
+					position={index} 
+					letterMapItem={letterMapItem} 
+					wordIndex={wordItem.index} 
+					checkCorrect={handleTyping}
+					letterBoxRefs={textareaRefArray}
+				/>
 			})
 		}
+		{/* {getAnswerBank()} */}
 		</Col>
 	</Row>
 	<Row>

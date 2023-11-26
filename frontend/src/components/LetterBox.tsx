@@ -4,15 +4,17 @@ interface LetterBoxProps {
 	wordIndex: number,
 	position: number,
 	letterMapItem: WordLetterMap,
-	checkCorrect: Function
+	checkCorrect: Function,
+	letterBoxRefs: React.RefObject<HTMLTextAreaElement>[]
 }
 
-const LetterBox: React.FC<LetterBoxProps>  = ({position,wordIndex,letterMapItem,checkCorrect}) => {
+const LetterBox: React.FC<LetterBoxProps>  = ({position,wordIndex,letterMapItem,checkCorrect,letterBoxRefs}) => {
 	const [letter, setLetter] = useState('')
 	const [status, setStatus] = useState('5px solid gray')
 	const [correct, setCorrect] = useState(false)
 
 	const textareaRef = useRef<HTMLTextAreaElement>(null)
+	letterBoxRefs[position] = textareaRef
 
 	const handleFocus = (e:React.FocusEvent<HTMLTextAreaElement>) => {
 		if (e == null) {
@@ -56,6 +58,10 @@ const LetterBox: React.FC<LetterBoxProps>  = ({position,wordIndex,letterMapItem,
 		if (word && word.state) {
 			word.state[position] = w
 			setCorrect(true)
+		}
+
+		if (letterBoxRefs[position + 1]) {
+			letterBoxRefs[position + 1].current?.focus()
 		}
 	  } else if (answer) {
 	    setStatus('5px solid red')
