@@ -115,8 +115,8 @@ function App() {
       </Row>
       {wordPosition !== undefined ? <Word wordItem={words[wordPosition]} key={`${wordPosition}`}/> : ''}
       <Row className="p-3">
-          <Col className="d-flex" style={{justifyContent: 'center'}}>
-          <button className="btn btn-primary" style={{marginRight: '5px'}} onClick={() => setShowAnswerBank(!showAnswerBank)}>{showAnswerBank ? 'Hide Letters' : 'Show Letters'}</button>
+          <Col className="d-flex" style={{justifyContent: 'center', alignItems: 'center'}}>
+          <button className="btn btn-success" style={{marginRight: '5px'}} onClick={() => setShowAnswerBank(!showAnswerBank)}>{showAnswerBank ? 'Hide Letters' : 'Show Letters'}</button>
           {showAnswerBank ? getAnswerBank() : ''}
           </Col>
       </Row>

@@ -23,6 +23,9 @@ func main() {
 	fileHandler := handlers.NewFileHandler(router)
 	fileHandler.RegisterRoutes()
 
+	siteHandler := handlers.NewSiteHandler(router)
+	siteHandler.RegisterRoutes()
+
 	handler := cors.Default().Handler(router)
 
 	http.ListenAndServe(":8080", handler)

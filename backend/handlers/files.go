@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -33,13 +32,11 @@ func (h *FileHandler) RegisterRoutes() {
 // GetAudioFile returns audio file
 func (h *FileHandler) GetAudioFile(w http.ResponseWriter, r *http.Request) {
 	path := "." + r.URL.Path
-	fmt.Println(path)
 	http.ServeFile(w, r, path)
 }
 
 // GetList returns a random list of Words
 func (h *FileHandler) GetPictureFile(w http.ResponseWriter, r *http.Request) {
 	path := "." + r.URL.Path
-	fmt.Println(path)
 	http.ServeFile(w, r, path)
 }
