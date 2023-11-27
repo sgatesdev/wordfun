@@ -50,6 +50,7 @@ const LetterBox: React.FC<LetterBoxProps>  = ({position,wordIndex,letterMapItem,
 	  e.currentTarget.value = text.toUpperCase()
 
 	  if (text === answer?.toUpperCase()) {
+		setCorrect(true)
 	    	setStatus('5px solid green')
 	     let w = { letter: text, correct: true, answer: answer }
 		updateState(wordIndex, position, w)
@@ -58,6 +59,7 @@ const LetterBox: React.FC<LetterBoxProps>  = ({position,wordIndex,letterMapItem,
 			letterBoxRefs[position + 1].current?.focus()
 		}
 	  } else if (answer) {
+		setCorrect(false)
 		setStatus('5px solid red')
 		let w = { letter: text, correct: false, answer: answer }
 		updateState(wordIndex, position, w)

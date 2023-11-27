@@ -79,17 +79,19 @@ function App() {
 		}
 	}
 
+  const [showAnswerBank, setShowAnswerBank] = useState<boolean>(false)
+
   const getAnswerBank = () => {
     let wordItem = words[wordPosition]
-    if (wordItem.state === undefined) {
+    if (wordItem === undefined || wordItem.state === undefined) {
       return
     }
     let copy = [...wordItem.state]
-		let bank = copy.sort((a,b) => a.answer.localeCompare(b.answer)).map((letterMapItem, index) => {
+		let bank = copy.sort((a,b) => b.answer.localeCompare(a.answer)).map((letterMapItem, index) => {
 			if (letterMapItem.correct) {
-				return <span style={{textDecoration: 'line-through'}}>{letterMapItem.answer.toUpperCase()}</span>
+				return <h3 style={{textDecoration: 'line-through', color: 'gray', paddingRight: '1px'}}>{letterMapItem.answer.toUpperCase()}</h3>
 			} else {
-				return <span>{letterMapItem.answer.toUpperCase()}</span>
+				return <h3 style={{paddingRight: '1px'}}>{letterMapItem.answer.toUpperCase()}</h3>
 			}
 		})
 		return bank
@@ -113,9 +115,10 @@ function App() {
       </Row>
       {wordPosition !== undefined ? <Word wordItem={words[wordPosition]} key={`${wordPosition}`}/> : ''}
       <Row className="p-3">
-        <Col>
-        {getAnswerBank()}
-        </Col>
+          <Col className="d-flex" style={{justifyContent: 'center'}}>
+          <button className="btn btn-primary" style={{marginRight: '5px'}} onClick={() => setShowAnswerBank(!showAnswerBank)}>{showAnswerBank ? 'Hide Letters' : 'Show Letters'}</button>
+          {showAnswerBank ? getAnswerBank() : ''}
+          </Col>
       </Row>
       <Row className="text-center p-3">
       {getRandomIcon(correct)}
