@@ -31,12 +31,12 @@ func (h *FileHandler) RegisterRoutes() {
 
 // GetAudioFile returns audio file
 func (h *FileHandler) GetAudioFile(w http.ResponseWriter, r *http.Request) {
-	path := "." + r.URL.Path
+	path := r.URL.Path
 	http.ServeFile(w, r, path)
 }
 
 // GetList returns a random list of Words
 func (h *FileHandler) GetPictureFile(w http.ResponseWriter, r *http.Request) {
-	path := "." + r.URL.Path
+	path := r.URL.Path
 	http.ServeFile(w, r, path)
 }

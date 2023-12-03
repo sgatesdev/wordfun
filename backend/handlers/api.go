@@ -128,7 +128,6 @@ func generateAudioFile(client *texttospeech.Client, ctx context.Context, text st
 		log.Fatal("AUDIO_FILES_DIR not set")
 	}
 	filename := fmt.Sprintf("%s%s.mp3", path, text)
-	fmt.Println(filename)
 	err = ioutil.WriteFile(filename, resp.AudioContent, 0777)
 	if err != nil {
 		return err, ""

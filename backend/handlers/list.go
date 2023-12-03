@@ -42,6 +42,8 @@ func (h *ListHandler) GetList(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Fatal("AUDIO_FILES_DIR not set")
 	}
+
+	path = strings.ReplaceAll(path, "\"", "")
 	files, err := os.Open(path)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -59,8 +61,7 @@ func (h *ListHandler) GetList(w http.ResponseWriter, r *http.Request) {
 
 	// get a random list of files
 	words := make([]models.Word, 0)
-	for i, v := range fileInfo {
-		log.Println(i, v.Name())
+	for _, v := range fileInfo {
 		w := strings.Split(v.Name(), ".")
 		words = append(words, models.Word{
 			Word:      w[0],

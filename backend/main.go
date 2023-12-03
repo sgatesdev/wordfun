@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
@@ -28,5 +30,10 @@ func main() {
 
 	handler := cors.Default().Handler(router)
 
-	http.ListenAndServe(":8080", handler)
+	port, ok := os.LookupEnv("WORDFUN_PORT")
+	if !ok {
+		panic("WORDFUN_PORT not set")
+	}
+	fmt.Println("Server started on port", port)
+	http.ListenAndServe(fmt.Sprintf(":%s", port), handler)
 }

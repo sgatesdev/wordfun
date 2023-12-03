@@ -18,8 +18,10 @@ function App() {
   }, [])
 
  const getLesson = async () => {
+    let port = process.env?.REACT_APP_WORDFUN_PORT || '8080'
+    let hostname = window.location.hostname;
 		try {
-			let res = await fetch(`http://localhost:8080/list`);
+			let res = await fetch(`http://${hostname}:${port}/list`);
 			let data = await res.json();
 
       data.forEach((word: WordMapItem, index: number) => {

@@ -9,7 +9,8 @@ interface WordComponentProps {
 
 const Word: React.FC<WordComponentProps> = ({wordItem}) => {
 	let textareaRefArray: React.RefObject<HTMLTextAreaElement>[] = [];
-
+	let hostname = window.location.hostname;
+    let port = process.env?.REACT_APP_WORDFUN_PORT || '8080'
 	return (
 	<>
 	<Row style={{borderTop: '5px solid gray', marginBottom: '5px', padding: '5px'}}>
@@ -35,8 +36,8 @@ const Word: React.FC<WordComponentProps> = ({wordItem}) => {
 	<Row>
 		<Col className="text-center">
 			{wordItem?.audio_file != undefined ?
-			<audio controls src={`http://localhost:8080${wordItem?.audio_file}`}>
-			<a href={`http://localhost:8080${wordItem?.audio_file}`}> Download audio </a>
+			<audio controls src={`http://${hostname}:${port}${wordItem?.audio_file}`}>
+			<a href={`http://${hostname}:${port}${wordItem?.audio_file}`}> Download audio </a>
 			</audio>
 			: ''
 			}
