@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -64,7 +63,6 @@ func (h *TextToSpeechHandler) handleGenerateAudio(w http.ResponseWriter, r *http
 	}
 	defer client.Close()
 
-	//
 	var wg sync.WaitGroup
 	statusChannel := make(chan string)
 
@@ -128,9 +126,22 @@ func generateAudioFile(client *texttospeech.Client, ctx context.Context, text st
 		log.Fatal("AUDIO_FILES_DIR not set")
 	}
 	filename := fmt.Sprintf("%s%s.mp3", path, text)
-	err = ioutil.WriteFile(filename, resp.AudioContent, 0777)
+
+	file, err := os.Create(filename)
 	if err != nil {
 		return err, ""
 	}
+	defer file.Close()
+
+	err = os.Chmod(filename, 0777)
+	if err != nil {
+		return err, ""
+	}
+
+	_, err = file.Write(resp.AudioContent)
+	if err != nil {
+		return err, ""
+	}
+
 	return nil, fmt.Sprintf("Audio content written to file: %v", filename)
 }
