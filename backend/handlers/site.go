@@ -25,11 +25,17 @@ func (h *SiteHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // RegisterRoutes registers routes for frontend handler
 func (h *SiteHandler) RegisterRoutes() {
+	h.Router.HandleFunc("/upload", h.ServeReactApp)
 	h.Router.HandleFunc("/{path:.*}", h.GetFrontendFiles)
 }
 
 // Getfrontendfiles returns frontend files
 func (h *SiteHandler) GetFrontendFiles(w http.ResponseWriter, r *http.Request) {
 	path := "./public" + r.URL.Path
+	http.ServeFile(w, r, path)
+}
+
+func (h *SiteHandler) ServeReactApp(w http.ResponseWriter, r *http.Request) {
+	path := "./public/index.html"
 	http.ServeFile(w, r, path)
 }
