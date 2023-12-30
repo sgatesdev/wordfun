@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CSVReader from 'react-csv-reader';
 
 interface CreateListReq {
@@ -8,6 +8,10 @@ interface CreateListReq {
 const Upload = () => {
     const [words, setWords] = useState<string[]>([])
     const [uploadMessage, setUploadMessage] = useState<string>('')
+
+    useEffect(() => {
+        console.log(words)
+    }, [setWords])
 
     const sendCreate = async () => {
         let port = process.env?.REACT_APP_WORDFUN_PORT || '8080'
@@ -37,8 +41,11 @@ const Upload = () => {
             <h1>Upload</h1>
         </div>
         <CSVReader onFileLoaded={(data, fileInfo, originalFile) => {
-            let newWords = data.map((word: string[]) => {
-                return word[0]
+            const newWords:string[] = []
+            data.forEach((rowOfWords: string[]) => {
+                rowOfWords.forEach((word: string) => {
+                    newWords.push(word)
+                })
             })
             setWords(newWords)
         }} />

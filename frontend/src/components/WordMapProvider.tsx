@@ -2,7 +2,7 @@ import React, { createContext, useState } from 'react';
 
 export type WordLetterMap = {
 	letter: string,
-  answer: string,
+    answer: string,
 	correct: boolean,
 }
 
@@ -11,27 +11,30 @@ export type WordMapItem = {
     word?: string
     audio_file?: string
     state?: Array<WordLetterMap>
+    correct?: boolean
+    saved?: boolean
+    answerKey?: string[]
 }
 
 interface ContextType {
-  words: Array<WordMapItem>;
-  correct: boolean,
-  setCorrect: Function,
-  updateWord: Function
-  updateState: Function
+    words: Array<WordMapItem>;
+    correct: boolean,
+    setCorrect: Function,
+    updateWord: Function
+    updateState: Function
 }
 
 interface WordMapProviderProps {
-  children: React.ReactNode;
+    children: React.ReactNode;
 }
 
 export const WordMapContext = createContext<ContextType>({
-  words: [],
-  correct: false,
-  // stores whether entire word is correct, sits at index level - not cached
-  setCorrect: () => {},
-  updateWord: () => {},
-  updateState: () => {}
+    words: [],
+    correct: false,
+    // stores whether entire word is correct, sits at index level - not cached
+    setCorrect: () => {},
+    updateWord: () => {},
+    updateState: () => {}
 })
 
 export const WordMapProvider: React.FC<WordMapProviderProps> = ({children}) => {

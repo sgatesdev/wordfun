@@ -13,7 +13,7 @@ const Word: React.FC<WordComponentProps> = ({wordItem}) => {
     let port = process.env?.REACT_APP_WORDFUN_PORT || '8080'
 	return (
 	<>
-	<Row style={{borderTop: '5px solid gray', marginBottom: '5px', padding: '5px'}}>
+	<Row style={{marginBottom: '5px', padding: '5px'}}>
 		<Col className="text-center">
 		{
 			// TODO restore state here
@@ -36,7 +36,10 @@ const Word: React.FC<WordComponentProps> = ({wordItem}) => {
 	<Row>
 		<Col className="text-center">
 			{wordItem?.audio_file != undefined ?
-			<audio controls src={`http://${hostname}:${port}${wordItem?.audio_file}`}>
+			<audio 
+                controls src={`http://${hostname}:${port}${wordItem?.audio_file}`}
+                autoPlay={true}
+            >
 			<a href={`http://${hostname}:${port}${wordItem?.audio_file}`}> Download audio </a>
 			</audio>
 			: ''
