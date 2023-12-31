@@ -17,11 +17,15 @@ export type WordMapItem = {
 }
 
 interface ContextType {
-    words: Array<WordMapItem>;
+    words: Array<WordMapItem>,
     correct: boolean,
     setCorrect: Function,
-    updateWord: Function
-    updateState: Function
+    updateWord: Function,
+    updateState: Function,
+    wordPosition: number,
+    setWordPosition: Function,
+    nextWord: Function,
+    prevWord: Function,
 }
 
 interface WordMapProviderProps {
@@ -34,7 +38,13 @@ export const WordMapContext = createContext<ContextType>({
     // stores whether entire word is correct, sits at index level - not cached
     setCorrect: () => {},
     updateWord: () => {},
-    updateState: () => {}
+    updateState: () => {},
+    // manage position in word array
+    wordPosition: 0,
+    setWordPosition: () => {},
+    // navigation
+    nextWord: () => {},
+    prevWord: () => {},
 })
 
 export const WordMapProvider: React.FC<WordMapProviderProps> = ({children}) => {
@@ -60,9 +70,40 @@ export const WordMapProvider: React.FC<WordMapProviderProps> = ({children}) => {
     })
   }
 
-  return (
-    <WordMapContext.Provider value={{words, correct, setCorrect, updateWord, updateState}}>
-      {children}
-    </WordMapContext.Provider>
-  )
+    // manage current word
+    const [wordPosition, setWordPosition] = useState<number>(0)
+    
+    const prevWord = () => {
+        let prevPosition = wordPosition - 1
+        if (prevPosition < 0) {
+            prevPosition = 0
+        }
+        setWordPosition(prevPosition)
+    }
+
+    const nextWord = () => {
+        let nextPosition = wordPosition + 1
+        if (nextPosition > words.length - 1) {
+            nextPosition = words.length - 1
+        }
+        setWordPosition(nextPosition)
+    }
+
+    let value = {
+        words,
+        correct,
+        setCorrect,
+        updateWord,
+        updateState,
+        wordPosition,
+        setWordPosition,
+        nextWord,
+        prevWord,
+    }
+
+    return (
+        <WordMapContext.Provider value={value}>
+            {children}
+        </WordMapContext.Provider>
+    )
 }

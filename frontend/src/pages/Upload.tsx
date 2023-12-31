@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import CSVReader from 'react-csv-reader';
+import {HOSTNAME,PORT} from '../utils/constants'
 
 interface CreateListReq {
     Words: string[]
@@ -14,11 +15,9 @@ const Upload = () => {
     }, [setWords])
 
     const sendCreate = async () => {
-        let port = process.env?.REACT_APP_WORDFUN_PORT || '8080'
-        let hostname = window.location.hostname;
         let req:CreateListReq = {Words: words}
         try {
-            let res = await fetch(`http://${hostname}:${port}/generate`, {method: 'POST', body: JSON.stringify(req)});
+            let res = await fetch(`http://${HOSTNAME}:${PORT}/generate`, {method: 'POST', body: JSON.stringify(req)});
             if (res.ok) {
                 setUploadMessage('Upload successful!')
             } else {

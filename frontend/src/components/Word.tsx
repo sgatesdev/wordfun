@@ -1,7 +1,7 @@
 import { Row, Col, Button } from 'react-bootstrap';
 import LetterBox from './LetterBox';
-import { useState, useEffect, useContext, useRef } from 'react';
-import { WordLetterMap, WordMapContext, WordMapItem } from './WordMapProvider';
+import { WordMapItem } from './WordMapProvider';
+import { HOSTNAME, PORT } from '../utils/constants';
 
 interface WordComponentProps {
 	wordItem: WordMapItem
@@ -9,8 +9,6 @@ interface WordComponentProps {
 
 const Word: React.FC<WordComponentProps> = ({wordItem}) => {
 	let textareaRefArray: React.RefObject<HTMLTextAreaElement>[] = [];
-	let hostname = window.location.hostname;
-    let port = process.env?.REACT_APP_WORDFUN_PORT || '8080'
 	return (
 	<>
 	<Row style={{marginBottom: '5px', padding: '5px'}}>
@@ -37,10 +35,10 @@ const Word: React.FC<WordComponentProps> = ({wordItem}) => {
 		<Col className="text-center">
 			{wordItem?.audio_file != undefined ?
 			<audio 
-                controls src={`http://${hostname}:${port}${wordItem?.audio_file}`}
+                controls src={`http://${HOSTNAME}:${PORT}${wordItem?.audio_file}`}
                 autoPlay={true}
             >
-			<a href={`http://${hostname}:${port}${wordItem?.audio_file}`}> Download audio </a>
+			<a href={`http://${HOSTNAME}:${PORT}${wordItem?.audio_file}`}> Download audio </a>
 			</audio>
 			: ''
 			}
