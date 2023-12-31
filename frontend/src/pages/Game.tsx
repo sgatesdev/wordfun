@@ -34,7 +34,7 @@ const Game = () => {
 
     const [ width, height ] = useWindowSize()
     const correct = wordPosition !== undefined && words[wordPosition]?.correct
-    const [show, setShow] = useState(true);
+    const [show, setShow] = useState(false);
     const [showAnswerBank, setShowAnswerBank] = useState<boolean>(false)
 
     // hooks

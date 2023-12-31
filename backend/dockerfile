@@ -6,6 +6,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY ./handlers ./handlers
+COPY ./utils ./utils
 COPY ./models ./models
 COPY ./public ./public
 COPY ./credentials.json ./
