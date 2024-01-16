@@ -49,7 +49,6 @@ const Game = () => {
         }
     }, [words])
 
-    // test
     const worksheetMode = async () => {
         let letterBanks = words.map((wordItem) => wordItem.word!)
         await createWorksheet(letterBanks)
@@ -58,7 +57,7 @@ const Game = () => {
     return (
         <Container style={{marginTop: '15px'}}>
         <Row>
-        <Col><img src="title.png" alt="Wordfun with Hailey!" style={{height: '100%', width: '100%'}}/></Col>
+        <Col className="text-center"><img src="title.png" alt="Wordfun" style={{height: '10rem'}}/></Col>
         </Row>
         <Row style={{justifyContent: 'space-between', marginTop: '20px', marginBottom: '15px'}}>
         <Col className="text-left">

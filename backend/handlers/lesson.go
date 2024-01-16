@@ -217,7 +217,7 @@ func (h *LessonHandler) GenerateWorksheet(w http.ResponseWriter, r *http.Request
 	pdf.SetFont("Arial", "B", 16)
 
 	// Add centered title
-	pdf.CellFormat(190, 25, "WORDFUN WITH HAILEY!", "0", 1, "C", false, 0, "")
+	pdf.CellFormat(190, 25, "WORDFUN!", "0", 1, "C", false, 0, "")
 
 	// randomize order
 	for i, letters := range req.LetterBanks {
