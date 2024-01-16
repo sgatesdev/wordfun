@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 )
@@ -27,16 +28,39 @@ func (h *FileHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (h *FileHandler) RegisterRoutes() {
 	h.Router.HandleFunc("/files/audio/{path:.*}", h.GetAudioFile)
 	h.Router.HandleFunc("/files/pictures/{path:.*}", h.GetPictureFile)
+	h.Router.HandleFunc("/files/worksheets/{path:.*}", h.GetWorksheetFile)
 }
 
-// GetAudioFile returns audio file
+// serve audio file
 func (h *FileHandler) GetAudioFile(w http.ResponseWriter, r *http.Request) {
-	path := r.URL.Path
+	path := prependPath(r.URL.Path)
 	http.ServeFile(w, r, path)
 }
 
-// GetList returns a random list of Words
+// serve picture file
 func (h *FileHandler) GetPictureFile(w http.ResponseWriter, r *http.Request) {
-	path := r.URL.Path
+	path := prependPath(r.URL.Path)
 	http.ServeFile(w, r, path)
+}
+
+// serve worksheet sPDF
+func (h *FileHandler) GetWorksheetFile(w http.ResponseWriter, r *http.Request) {
+	path := prependPath(r.URL.Path)
+	http.ServeFile(w, r, path)
+}
+
+// prepend path with . if local mode
+func prependPath(path string) string {
+	if localMode() {
+		return "." + path
+	}
+	return path
+}
+
+func localMode() bool {
+	val, ok := os.LookupEnv("WORDFUN_LOCAL_MODE")
+	if ok && val == "true" {
+		return true
+	}
+	return false
 }

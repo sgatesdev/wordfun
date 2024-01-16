@@ -12,7 +12,7 @@ import { useWindowSize } from '@react-hook/window-size'
 import Confetti from 'react-confetti'
 import AnswerBank from '../components/AnswerBank';
 import WordList from '../components/WordList';
-import { createWordResult, getLesson, lessonComplete, refreshLesson } from '../api/requests';
+import { createWordResult, getLesson, lessonComplete, refreshLesson, createWorksheet } from '../api/requests';
 
 const Game = () => {
     const { 
@@ -49,6 +49,12 @@ const Game = () => {
         }
     }, [words])
 
+    // test
+    const worksheetMode = async () => {
+        let letterBanks = words.map((wordItem) => wordItem.word!)
+        await createWorksheet(letterBanks)
+    }
+
     return (
         <Container style={{marginTop: '15px'}}>
         <Row>
@@ -59,7 +65,10 @@ const Game = () => {
         <Button variant="secondary" style={{marginRight: '5px'}} onClick={() => prevWord()}>Previous Word</Button>
         <Button variant="primary" onClick={() => nextWord()}>Next Word</Button>
         </Col>
-        <Col className="text-end"><Button variant="warning" onClick={refreshLesson}>New Lesson</Button></Col>
+        <Col className="text-end">
+            <Button variant="danger" style={{marginRight: '5px'}} onClick={worksheetMode}>Worksheet</Button>
+            <Button variant="warning" onClick={refreshLesson}>New Lesson</Button>
+        </Col>
         </Row>
         <Row style={{borderTop: '5px solid gray'}}>
             <Col className="col-2">

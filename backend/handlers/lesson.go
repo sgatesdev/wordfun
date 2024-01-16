@@ -15,6 +15,8 @@ import (
 	"github.com/gorilla/mux"
 	"gorm.io/gorm"
 	"samgates.io/wordfun/models"
+
+	"github.com/jung-kurt/gofpdf"
 )
 
 // LessonHandler returns a random list of Words
@@ -38,6 +40,7 @@ func (h *LessonHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // RegisterRoutes registers routes for the list handler
 func (h *LessonHandler) RegisterRoutes() {
+	h.Router.HandleFunc("/lesson/worksheet", h.GenerateWorksheet).Methods("POST")
 	h.Router.HandleFunc("/lesson", h.GetLesson).Methods("GET")
 	h.Router.HandleFunc("/lesson", h.SaveLesson).Methods("POST")
 }
@@ -190,4 +193,70 @@ func (h *LessonHandler) SaveLesson(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(lesson)
+}
+
+// create printable PDF worksheet for lesson
+func (h *LessonHandler) GenerateWorksheet(w http.ResponseWriter, r *http.Request) {
+	// read request body
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	req := models.LetterBanks{}
+	err = json.Unmarshal(body, &req)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	pdf := gofpdf.New("P", "mm", "A4", "")
+	pdf.AddPage()
+
+	pdf.SetFont("Arial", "B", 16)
+
+	// Add centered title
+	pdf.CellFormat(190, 25, "WORDFUN WITH HAILEY!", "0", 1, "C", false, 0, "")
+
+	// randomize order
+	for i, letters := range req.LetterBanks {
+		pdf.CellFormat(190, 7, fmt.Sprint(i+1)+". _________________________________", "0", 1, "", false, 0, "")
+
+		// Split letters into letters and create a box for each letter
+		l := strings.Split(strings.ToUpper(letters), "")
+		// randomize order of letters
+		rand.Shuffle(len(l), func(i, j int) { l[i], l[j] = l[j], l[i] })
+		for _, letter := range l {
+			pdf.CellFormat(10, 10, letter, "1", 0, "C", false, 0, "")
+		}
+
+		pdf.Ln(15) // Add a blank line
+	}
+
+	path, ok := os.LookupEnv("WORKSHEET_FILES_DIR")
+	if !ok {
+		log.Fatal("WORKSHEET_FILES_DIR not set")
+	}
+
+	timestamp := time.Now().UTC().Format("2006-01-02T15:04:05")
+	timestamp = strings.ReplaceAll(timestamp, ":", "-")
+	filename := fmt.Sprintf("%s/%s.pdf", path, timestamp)
+
+	file, err := os.Create(filename)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	file.Close()
+
+	err = pdf.OutputFileAndClose(filename)
+	if err != nil {
+		panic(err)
+	}
+
+	// send link as response
+	w.WriteHeader(http.StatusCreated)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"link": "/files/worksheets/" + timestamp + ".pdf"})
 }

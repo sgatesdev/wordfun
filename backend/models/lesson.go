@@ -18,3 +18,7 @@ type Lesson struct {
 type LessonReq struct {
 	Words []string `json:"words"`
 }
+
+type LetterBanks struct {
+	LetterBanks []string `json:"letter_banks"`
+}

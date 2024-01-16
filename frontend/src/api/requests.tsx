@@ -58,6 +58,38 @@ export const lessonComplete = async (setShow: (flag:boolean) => void, words: Wor
     
 }
 
+export const createWorksheet = async (letterBanks:string[]): Promise<string> => {
+    try {
+        let req = {letter_banks: letterBanks}
+        const res = await fetch(`http://${HOSTNAME}:${PORT}/lesson/worksheet`, 
+            {method: 'POST', body: JSON.stringify(req)}
+        );
+ 
+        if (res.ok) {
+            console.log("CREATED WORKSHEET")        
+            // get URL for worksheet from response
+            let {link} = await res.json()
+            link = `http://${HOSTNAME}:${PORT}${link}`
+
+            // create a hidden anchor element and programmatically click it
+            const a = document.createElement('a');
+            a.href = link;
+            a.target="_blank"
+            a.download = 'worksheet.pdf'; // replace 'filename' with the actual filename
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            return link
+        }
+        return "Worksheet failed to create."
+    } catch(err) {
+        console.log(err)
+        return "Worksheet failed to create."
+    }
+}
+
 export const refreshLesson = () => {
     window.location.reload()
 }
