@@ -1,0 +1,7 @@
+files
+credentials.json
+envs.sh
+public
+docker_images
+.DS_Store
+node_modules
