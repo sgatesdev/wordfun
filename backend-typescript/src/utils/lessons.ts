@@ -44,19 +44,21 @@ const getWords = (params: any, wordList: string[], recentWords: string[]): strin
 
     // if we still don't have enough words, add random words from recentWords
     if (filteredWordList.length < numWords) {
-        let randomizedWords = wordList
-            .filter((word) => !recentWords.includes(word))
+        console.log('adding from recent words')
+        let randomizedWords = recentWords
+            .filter((word) => !filteredWordList.includes(word))
             .sort(() => Math.random() - 0.5);
-        filteredWordList = [...randomizedWords.slice(0, numWords - filteredWordList.length)];
+        filteredWordList = [...filteredWordList, ...randomizedWords.slice(0, numWords - filteredWordList.length)];
     }
 
     // if there still aren't enough words, add from the original list
     if (filteredWordList.length < numWords) {
+        console.log('adding from wordList')
         let randomizedWords = wordList
             .filter((word) => !filteredWordList.includes(word))
             .sort(() => Math.random() - 0.5);
-        filteredWordList = [...randomizedWords.slice(0, numWords - filteredWordList.length)];
+        filteredWordList = [...filteredWordList, ...randomizedWords.slice(0, numWords - filteredWordList.length)];
     }
-
+    console.log(filteredWordList.length, numWords)
     return filteredWordList.slice(0, numWords);
 }

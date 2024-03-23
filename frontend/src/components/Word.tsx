@@ -2,6 +2,7 @@ import { Row, Col, Button } from 'react-bootstrap';
 import LetterBox from './LetterBox';
 import { WordMapItem } from './WordMapProvider';
 import { HOSTNAME, PORT } from '../utils/constants';
+import { useEffect } from 'react';
 
 interface WordComponentProps {
 	wordItem: WordMapItem
@@ -9,18 +10,19 @@ interface WordComponentProps {
 
 const Word: React.FC<WordComponentProps> = ({wordItem}) => {
 	let textareaRefArray: React.RefObject<HTMLTextAreaElement>[] = [];
+
 	return (
 	<>
 	<Row style={{marginBottom: '5px', padding: '5px'}}>
 		<Col className="text-center">
 		{
 			// TODO restore state here
-			wordItem?.state && wordItem.state.map((letterMapItem, index) => {
+			wordItem?.answer && wordItem.answer.map((letterMapItem, index) => {
 				if (wordItem.index === undefined) {
 					return
 				}
 				return <LetterBox
-					key={index} 
+					key={`${wordItem.id}-${index}`} 
 					position={index} 
 					letterMapItem={letterMapItem} 
 					wordIndex={wordItem.index} 
@@ -33,12 +35,12 @@ const Word: React.FC<WordComponentProps> = ({wordItem}) => {
 	</Row>
 	<Row>
 		<Col className="text-center">
-			{wordItem?.audio_file != undefined ?
+			{wordItem?.text != undefined ?
 			<audio 
-                controls src={`http://${HOSTNAME}:${PORT}${wordItem?.audio_file}`}
+                controls src={`http://${HOSTNAME}:${PORT}/files/audio/${wordItem.text}.mp3`}
                 autoPlay={true}
             >
-			<a href={`http://${HOSTNAME}:${PORT}${wordItem?.audio_file}`}> Download audio </a>
+			<a href={`http://${HOSTNAME}:${PORT}/files/audio/${wordItem.text}.mp3`}> Download audio </a>
 			</audio>
 			: ''
 			}

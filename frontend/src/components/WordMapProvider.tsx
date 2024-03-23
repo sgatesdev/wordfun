@@ -7,10 +7,11 @@ export type WordLetterMap = {
 }
 
 export type WordMapItem = {
+    id?: string
     index?: number
-    word?: string
+    text?: string
     audio_file?: string
-    state?: Array<WordLetterMap>
+    answer?: Array<WordLetterMap>
     correct?: boolean
     saved?: boolean
     answerKey?: string[]
@@ -18,8 +19,8 @@ export type WordMapItem = {
 
 interface ContextType {
     words: Array<WordMapItem>,
-    correct: boolean,
-    setCorrect: Function,
+    lessonComplete: boolean,
+    setLessonComplete: Function,
     updateWord: Function,
     updateState: Function,
     wordPosition: number,
@@ -34,9 +35,9 @@ interface WordMapProviderProps {
 
 export const WordMapContext = createContext<ContextType>({
     words: [],
-    correct: false,
+    lessonComplete: false,
     // stores whether entire word is correct, sits at index level - not cached
-    setCorrect: () => {},
+    setLessonComplete: () => {},
     updateWord: () => {},
     updateState: () => {},
     // manage position in word array
@@ -48,31 +49,31 @@ export const WordMapContext = createContext<ContextType>({
 })
 
 export const WordMapProvider: React.FC<WordMapProviderProps> = ({children}) => {
-  const [words, setWords] = useState<Array<WordMapItem>>([])
-  const [correct, setCorrect] = useState(false)
+    const [words, setWords] = useState<Array<WordMapItem>>([])
+    const [lessonComplete, setLessonComplete] = useState(false)
 
-  const updateWord = (position: number, word: WordMapItem) => {
-    setWords(prevWords => {
-      let newWords = [...prevWords]
-      newWords[position] = word
-      return newWords
-    })
-  }
+    const updateWord = (position: number, word: WordMapItem) => {
+        setWords(prevWords => {
+            let newWords = [...prevWords]
+            newWords[position] = word
+            return newWords
+        })
+    }
 
-  const updateState = (wordIndex: number, statePosition: number, letterMapItem: WordLetterMap) => {
-    setWords(prevWords => {
-      let newWords = [...prevWords]
-      let word = newWords[wordIndex]
-      if (word && word.state) {
-        word.state[statePosition] = letterMapItem
-      }
-      return newWords
-    })
-  }
+    const updateState = (wordIndex: number, statePosition: number, letterMapItem: WordLetterMap) => {
+        setWords(prevWords => {
+            let newWords = [...prevWords]
+            let word = newWords[wordIndex]
+            if (word && word.answer) {
+            word.answer[statePosition] = letterMapItem
+            }
+            return newWords
+        })
+    }
 
     // manage current word
     const [wordPosition, setWordPosition] = useState<number>(0)
-    
+
     const prevWord = () => {
         let prevPosition = wordPosition - 1
         if (prevPosition < 0) {
@@ -91,8 +92,8 @@ export const WordMapProvider: React.FC<WordMapProviderProps> = ({children}) => {
 
     let value = {
         words,
-        correct,
-        setCorrect,
+        lessonComplete,
+        setLessonComplete,
         updateWord,
         updateState,
         wordPosition,

@@ -1,18 +1,18 @@
 import {WordMapItem} from '../components/WordMapProvider'
 import {HOSTNAME, PORT} from '../utils/constants'
 
-export const getLesson = async (updateWord: Function) => {
+export const getLesson = async (updateWord: Function, lessonId: string) => {
     try {
-        let res = await fetch(`http://${HOSTNAME}:${PORT}/lesson`);
+        let res = await fetch(`http://${HOSTNAME}:${PORT}/lessons/${lessonId}`);
         let data = await res.json();
-
-        data.forEach((word: WordMapItem, index: number) => {
-            let letterState = word!.word!.split('').map((letter: string) => {
-                return {letter: '', correct: false, answer: letter}
-            })
-            word.state = letterState
+        data.words.forEach((word: WordMapItem, index: number) => {
+            if (word.answer == undefined || word.answer.length == 0) {
+                let letterState = word!.text!.split('').map((letter: string) => {
+                    return {letter: '', correct: false, answer: letter}
+                })
+                word.answer = letterState
+            }
             word.index = index
-            word.correct = false
             updateWord(index, word)
         })
     }
@@ -25,9 +25,18 @@ export const createWordResult = async (wordItem: WordMapItem) => {
     if (!wordItem) {
         return
     }
-    let req = {Word: wordItem.word, Correct: true}
+    let req = {...wordItem, correct: true}
     try {
-        let res = await fetch(`http://${HOSTNAME}:${PORT}/word`, {method: 'POST', body: JSON.stringify(req)});
+        let res = await fetch(`http://${HOSTNAME}:${PORT}/words/${wordItem.id}`, 
+            {
+                method: 'PUT', 
+                body: JSON.stringify(req),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            },
+        );
+        console.log(JSON.stringify(req))
         if (res.ok) {
             console.log("RESULT SAVED")
         } else {
@@ -39,41 +48,40 @@ export const createWordResult = async (wordItem: WordMapItem) => {
     }
 }
 
-export const lessonComplete = async (setShow: (flag:boolean) => void, words: WordMapItem[]) => {
-    let correctWords = words.filter((wordItem) => wordItem.correct)
-    if (correctWords.length === words.length && correctWords.length > 1) {
-        setShow(true)
-
-        let req = {words: words.map((wordItem) => wordItem.word)}
-        const res = await fetch(`http://${HOSTNAME}:${PORT}/lesson`, 
-            {method: 'POST', body: JSON.stringify(req)}
-        );
-        
-        if (res.ok) {
-            console.log("LESSON COMPLETE")
-        } else {
-            console.log("LESSON FAILED")
-        }
-    }
+export const sendLessonComplete = async (id: string) => {
+    let req = { complete: true }
+    const res = await fetch(`http://${HOSTNAME}:${PORT}/lessons/${id}`, 
+        {
+            method: 'PUT', 
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(req)}
+    );
     
+    if (res.ok) {
+        console.log("LESSON COMPLETE")
+    } else {
+        console.log("LESSON FAILED")
+    }
 }
 
-export const createWorksheet = async (letterBanks:string[]): Promise<string> => {
+export const createWorksheet = async (id:string): Promise<string> => {
     try {
-        let req = {letter_banks: letterBanks}
-        const res = await fetch(`http://${HOSTNAME}:${PORT}/lesson/worksheet`, 
-            {method: 'POST', body: JSON.stringify(req)}
+        // let req = {letter_banks: letterBanks}
+        const res = await fetch(`http://${HOSTNAME}:${PORT}/lessons/${id}/worksheet`, 
+            {method: 'GET', body: null}
         );
  
         if (res.ok) {
-            console.log("CREATED WORKSHEET")        
+            console.log("CREATED WORKSHEET", res)        
             // get URL for worksheet from response
-            let {link} = await res.json()
-            link = `http://${HOSTNAME}:${PORT}${link}`
-
+            let blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+    
             // create a hidden anchor element and programmatically click it
             const a = document.createElement('a');
-            a.href = link;
+            a.href = url;
             a.target="_blank"
             a.download = 'worksheet.pdf'; // replace 'filename' with the actual filename
             a.style.display = 'none';
@@ -81,7 +89,7 @@ export const createWorksheet = async (letterBanks:string[]): Promise<string> => 
             a.click();
             document.body.removeChild(a);
 
-            return link
+            return url
         }
         return "Worksheet failed to create."
     } catch(err) {

@@ -5,17 +5,17 @@ interface AnswerBankProps {
     show: boolean,
 }
 
-const AnswerBank: React.FC<AnswerBankProps> = ({wordItem, show}) => {
-    if (wordItem === undefined || wordItem.state === undefined || !show) {
+const AnswerBank = ({wordItem, show}: AnswerBankProps) => {
+    if (wordItem === undefined || wordItem.answer === undefined || !show) {
         return <></>
     }
-    let copy = [...wordItem.state]
+    let copy = [...wordItem.answer]
     let bank = copy.sort((a,b) => b.answer.localeCompare(a.answer)).map((letterMapItem, index) => {
-        // let key = `${wordItem.word}-${Date.now()}-${letterMapItem.answer}`
+        let key = `${wordItem.text}-${index}`
         if (letterMapItem.correct) {
-            return <h3 style={{textDecoration: 'line-through', color: 'gray', paddingRight: '1px'}}>{letterMapItem.answer.toUpperCase()}</h3>
+            return <h3 key={key} style={{textDecoration: 'line-through', color: 'gray', paddingRight: '1px'}}>{letterMapItem.answer.toUpperCase()}</h3>
         } else {
-            return <h3 style={{paddingRight: '1px'}}>{letterMapItem.answer.toUpperCase()}</h3>
+            return <h3 key={key} style={{paddingRight: '1px'}}>{letterMapItem.answer.toUpperCase()}</h3>
         }
     })
     return (
