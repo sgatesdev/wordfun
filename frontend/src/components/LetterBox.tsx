@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useContext } from 'react';
-import { WordMapContext, WordLetterMap } from './WordMapProvider';
+import { WordFunContext } from './WordFunProvider';
+import { WordLetterMap } from '../types';
 interface LetterBoxProps {
 	wordIndex: number,
 	position: number,
@@ -31,7 +32,7 @@ const LetterBox: React.FC<LetterBoxProps>  = ({position,wordIndex,letterMapItem,
 		}
 	}, [])
 
-	let { updateState } = useContext(WordMapContext)
+	let { updateState } = useContext(WordFunContext)
 	let {answer} = letterMapItem
 	
 	const handleInput = (e:React.FormEvent<HTMLTextAreaElement>) => {

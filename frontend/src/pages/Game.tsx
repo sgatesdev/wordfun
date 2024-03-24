@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Word from '../components/Word';
 import { useState, useMemo, useEffect, useContext } from 'react';
-import { WordMapContext, WordMapItem } from '../components/WordMapProvider';
+import { WordFunContext } from '../components/WordFunProvider';
 import { getRandomIcon } from '../components/StatusIcons';
 import { useWindowSize } from '@react-hook/window-size'
 import Confetti from 'react-confetti'
@@ -12,7 +12,7 @@ import AnswerBank from '../components/AnswerBank';
 import WordList from '../components/WordList';
 import { createWordResult, getLesson, sendLessonComplete, refreshLesson, createWorksheet } from '../api/requests';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Lesson } from '../types/lesson';
+import { Lesson } from '../types';
 import {HOSTNAME, PORT} from '../utils/constants'
 
 const Game = () => {
@@ -25,7 +25,7 @@ const Game = () => {
         setWordPosition,
         setLessonComplete,
         lessonComplete
-    } = useContext(WordMapContext)
+    } = useContext(WordFunContext)
 
     const checkCorrect = async () => {
         let wordItem = words[wordPosition]

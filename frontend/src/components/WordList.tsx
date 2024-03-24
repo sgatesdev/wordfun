@@ -1,8 +1,8 @@
-import {WordMapContext} from './WordMapProvider'
+import { WordFunContext } from './WordFunProvider'
 import { useContext } from 'react'
 
 const WordList = () => {
-    const { words, wordPosition, setWordPosition } = useContext(WordMapContext)
+    const { words, wordPosition, setWordPosition } = useContext(WordFunContext)
 
     let copy = [...words]
     let list = copy

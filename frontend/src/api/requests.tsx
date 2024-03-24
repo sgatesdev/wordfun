@@ -1,11 +1,11 @@
-import {WordMapItem} from '../components/WordMapProvider'
-import {HOSTNAME, PORT} from '../utils/constants'
+import { Word } from '../types'
+import { HOSTNAME, PORT } from '../utils/constants'
 
 export const getLesson = async (updateWord: Function, lessonId: string) => {
     try {
         let res = await fetch(`http://${HOSTNAME}:${PORT}/lessons/${lessonId}`);
         let data = await res.json();
-        data.words.forEach((word: WordMapItem, index: number) => {
+        data.words.forEach((word: Word, index: number) => {
             if (word.answer == undefined || word.answer.length == 0) {
                 let letterState = word!.text!.split('').map((letter: string) => {
                     return {letter: '', correct: false, answer: letter}
@@ -21,7 +21,7 @@ export const getLesson = async (updateWord: Function, lessonId: string) => {
     }
 }
 
-export const createWordResult = async (wordItem: WordMapItem) => {
+export const createWordResult = async (wordItem: Word) => {
     if (!wordItem) {
         return
     }

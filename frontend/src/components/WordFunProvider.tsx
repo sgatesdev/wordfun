@@ -1,24 +1,12 @@
 import React, { createContext, useState } from 'react';
+import { Word, WordLetterMap } from '../types';
 
-export type WordLetterMap = {
-	letter: string,
-    answer: string,
-	correct: boolean,
+interface WordFunProviderProps {
+    children: React.ReactNode;
 }
 
-export type WordMapItem = {
-    id?: string
-    index?: number
-    text?: string
-    audio_file?: string
-    answer?: Array<WordLetterMap>
-    correct?: boolean
-    saved?: boolean
-    answerKey?: string[]
-}
-
-interface ContextType {
-    words: Array<WordMapItem>,
+export const WordFunContext = createContext<{
+    words: Array<Word>,
     lessonComplete: boolean,
     setLessonComplete: Function,
     updateWord: Function,
@@ -27,13 +15,7 @@ interface ContextType {
     setWordPosition: Function,
     nextWord: Function,
     prevWord: Function,
-}
-
-interface WordMapProviderProps {
-    children: React.ReactNode;
-}
-
-export const WordMapContext = createContext<ContextType>({
+}>({
     words: [],
     lessonComplete: false,
     // stores whether entire word is correct, sits at index level - not cached
@@ -48,11 +30,11 @@ export const WordMapContext = createContext<ContextType>({
     prevWord: () => {},
 })
 
-export const WordMapProvider: React.FC<WordMapProviderProps> = ({children}) => {
-    const [words, setWords] = useState<Array<WordMapItem>>([])
+export const WordFunContextProvider: React.FC<WordFunProviderProps> = ({ children }) => {
+    const [words, setWords] = useState<Array<Word>>([])
     const [lessonComplete, setLessonComplete] = useState(false)
 
-    const updateWord = (position: number, word: WordMapItem) => {
+    const updateWord = (position: number, word: Word) => {
         setWords(prevWords => {
             let newWords = [...prevWords]
             newWords[position] = word
@@ -90,21 +72,19 @@ export const WordMapProvider: React.FC<WordMapProviderProps> = ({children}) => {
         setWordPosition(nextPosition)
     }
 
-    let value = {
-        words,
-        lessonComplete,
-        setLessonComplete,
-        updateWord,
-        updateState,
-        wordPosition,
-        setWordPosition,
-        nextWord,
-        prevWord,
-    }
-
     return (
-        <WordMapContext.Provider value={value}>
-            {children}
-        </WordMapContext.Provider>
+        <WordFunContext.Provider value={{
+            words,
+            lessonComplete,
+            setLessonComplete,
+            updateWord,
+            updateState,
+            wordPosition,
+            setWordPosition,
+            nextWord,
+            prevWord,
+        }}>
+            { children }
+        </WordFunContext.Provider>
     )
 }

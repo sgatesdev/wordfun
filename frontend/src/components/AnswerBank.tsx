@@ -1,7 +1,6 @@
-import { WordMapItem } from './WordMapProvider';
-
+import { Word } from "../types"
 interface AnswerBankProps {
-	wordItem: WordMapItem,
+	wordItem: Word,
     show: boolean,
 }
 

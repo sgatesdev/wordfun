@@ -1,14 +1,13 @@
 import { Row, Col, Button } from 'react-bootstrap';
 import LetterBox from './LetterBox';
-import { WordMapItem } from './WordMapProvider';
+import { Word } from '../types';
 import { HOSTNAME, PORT } from '../utils/constants';
-import { useEffect } from 'react';
 
 interface WordComponentProps {
-	wordItem: WordMapItem
+	wordItem: Word
 }
 
-const Word: React.FC<WordComponentProps> = ({wordItem}) => {
+const WordComponent: React.FC<WordComponentProps> = ({wordItem}) => {
 	let textareaRefArray: React.RefObject<HTMLTextAreaElement>[] = [];
 
 	return (
@@ -50,4 +49,4 @@ const Word: React.FC<WordComponentProps> = ({wordItem}) => {
 	)
 }
 
-export default Word
+export default WordComponent
