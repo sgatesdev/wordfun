@@ -33,7 +33,7 @@ const LetterBox: React.FC<LetterBoxProps>  = ({position,wordIndex,letterMapItem,
 	}, [])
 
 	let { updateState } = useContext(WordFunContext)
-	let {answer} = letterMapItem
+	let { answer } = letterMapItem
 	
 	const handleInput = (e:React.FormEvent<HTMLTextAreaElement>) => {
 	  if (e == null) {

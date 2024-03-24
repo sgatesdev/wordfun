@@ -15,7 +15,6 @@ const WordList = () => {
                 backgroundColor: wordPosition === index ?  '#e6e9eb' : ''
             }
 
-            // let style = {border: '1px solid black', ...baseStyle}
             return (<li 
                 key={index} style={style} 
                 className="list-group-item" 

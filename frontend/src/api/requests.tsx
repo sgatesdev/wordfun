@@ -36,7 +36,6 @@ export const createWordResult = async (wordItem: Word) => {
                 }
             },
         );
-        console.log(JSON.stringify(req))
         if (res.ok) {
             console.log("RESULT SAVED")
         } else {

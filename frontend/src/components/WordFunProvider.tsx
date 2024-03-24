@@ -1,5 +1,6 @@
 import React, { createContext, useState } from 'react';
-import { Word, WordLetterMap } from '../types';
+import { Word, Lesson, WordLetterMap } from '../types';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 interface WordFunProviderProps {
     children: React.ReactNode;
@@ -7,19 +8,40 @@ interface WordFunProviderProps {
 
 export const WordFunContext = createContext<{
     words: Array<Word>,
+    lessons: Lesson[],
     lessonComplete: boolean,
+    selectedLesson: string,
+    showSuccessModal: boolean,
+    showChooseLesson: boolean,
+    showNewLesson: boolean,
+    setLessons: Function,
     setLessonComplete: Function,
+    setSelectedLesson: Function,
+    setShowSuccessModal: Function,
+    setShowChooseLesson: Function,
+    setShowNewLesson: Function,
     updateWord: Function,
     updateState: Function,
     wordPosition: number,
     setWordPosition: Function,
     nextWord: Function,
     prevWord: Function,
+    changeLessonId: Function
 }>({
     words: [],
+    lessons: [],
     lessonComplete: false,
+    selectedLesson: '',
+    showSuccessModal: false,
+    showChooseLesson: false,
+    showNewLesson: false,
+    setLessons: () => {},
     // stores whether entire word is correct, sits at index level - not cached
     setLessonComplete: () => {},
+    setSelectedLesson: () => {},
+    setShowSuccessModal: () => {},
+    setShowChooseLesson: () => {},
+    setShowNewLesson: () => {},
     updateWord: () => {},
     updateState: () => {},
     // manage position in word array
@@ -28,11 +50,20 @@ export const WordFunContext = createContext<{
     // navigation
     nextWord: () => {},
     prevWord: () => {},
+    changeLessonId: () => {}
 })
 
 export const WordFunContextProvider: React.FC<WordFunProviderProps> = ({ children }) => {
+    const navigate = useNavigate();
+    const location = useLocation();
+
     const [words, setWords] = useState<Array<Word>>([])
     const [lessonComplete, setLessonComplete] = useState(false)
+    const [lessons, setLessons] = useState<Lesson[]>([]);
+    const [selectedLesson, setSelectedLesson] = useState('')
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [showChooseLesson, setShowChooseLesson] = useState(false);
+    const [showNewLesson, setShowNewLesson] = useState(false);
 
     const updateWord = (position: number, word: Word) => {
         setWords(prevWords => {
@@ -47,7 +78,7 @@ export const WordFunContextProvider: React.FC<WordFunProviderProps> = ({ childre
             let newWords = [...prevWords]
             let word = newWords[wordIndex]
             if (word && word.answer) {
-            word.answer[statePosition] = letterMapItem
+                word.answer[statePosition] = letterMapItem
             }
             return newWords
         })
@@ -72,17 +103,36 @@ export const WordFunContextProvider: React.FC<WordFunProviderProps> = ({ childre
         setWordPosition(nextPosition)
     }
 
+    // navigation
+    const changeLessonId = (newLessonId: string) => {
+        navigate({
+          pathname: location.pathname,
+          search: `?lessonId=${newLessonId}`
+        });
+    };
+
     return (
         <WordFunContext.Provider value={{
             words,
+            lessons,
             lessonComplete,
+            selectedLesson,
+            showSuccessModal,
+            showChooseLesson,
+            showNewLesson,
+            setLessons,
             setLessonComplete,
+            setSelectedLesson,
+            setShowSuccessModal,
+            setShowChooseLesson,
+            setShowNewLesson,
             updateWord,
             updateState,
             wordPosition,
             setWordPosition,
             nextWord,
             prevWord,
+            changeLessonId
         }}>
             { children }
         </WordFunContext.Provider>
